@@ -1,0 +1,12 @@
+server:
+  port: 8081
+
+es:
+  hosts: [127.0.0.1]
+  port: 9200
+  schema: http
+  connectTimeout: 30000
+  socketTimeout: 30000
+  connectionRequestTimeout: 30000
+  maxConnectNum: 100
+  maxConnectPerRoute: 100
