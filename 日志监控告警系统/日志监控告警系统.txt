@@ -1,0 +1,65 @@
+﻿日志监控告警系统
+定义：基于的日志进行监控，监控需要一定规则，对触发监控规则的日志信息进行告警，告警的方式，是短信和邮件。
+
+什么是规则：
+	应用程序日志信息捕获：log4j---->error,info,debug 应用程序程序的日志  error级别 TimeOutException 角标越界IndexXXXException ......Error
+	业务日志信息捕获：当订单量触发一千万时，告警通知，让大家庆祝下。OrdertotalNum：1000万
+
+规则的判定：
+	对一条一条输入的日志信息，进行字符串比较
+	String.contains.(" taskList ")  String.equals.(" taskList ")  String.match.(" 正则表达式 ")
+
+触发规则后：
+	告警，发短信，发邮件。
+	
+	
+	
+数据分析的步骤
+	1、明确分析的目标
+	2、根据目标收集数据
+	3、对数据进行清洗和标准化
+	4、使用工具对数据进行计算
+	5、展示分析的结果，给业务人员进行决策。
+	
+
+数据处理流程： flume+kafka+storm+redis
+	1、先有一个系统（订单系统），对系统的日志进行采集，通过日志采集插件（flume）进行数据采集。
+	2、通过flume采集的数据存放到kafka中   flume2kafka
+	3、Storm消费Kafka的数据  kafka2storm
+	4、Storm操作redis保存结果 storm2redis
+		
+		
+Storm程序如何编写：
+	1、KafkaSpout获取kafka集群中的某个topic的信息
+	2、FilterBolt对一行一行的日志进行过滤---规则校验 
+	3、NotifyBolt触发规则之后，发短信，发邮件
+	4、Save2MysqlBolt管理平台的数据展示
+		
+
+	
+	016-04-16 09:27:26,337 [main] [kafka.client.ClientUtils$]-[WARN] Fetching topic metadata with correlation id 0 for topics [Set(itcast21)] from broker [id:0,host:kafsska01,port:9092] failed
+	java.nio.channels.UnresolvedAddressException
+	at sun.nio.ch.Net.checkAddress(Net.java:101)
+	at sun.nio.ch.SocketChannelImpl.connect(SocketChannelImpl.java:622)
+	at kafka.network.BlockingChannel.connect(BlockingChannel.scala:57)
+	at kafka.producer.SyncProducer.connect(SyncProducer.scala:141)
+	at kafka.producer.SyncProducer.getOrMakeConnection(SyncProducer.scala:156)
+	at kafka.producer.SyncProducer.kafka$producer$SyncProducer$$doSend(SyncProducer.scala:68)
+	at kafka.producer.SyncProducer.send(SyncProducer.scala:112)
+	at kafka.client.ClientUtils$.fetchTopicMetadata(ClientUtils.scala:53)
+	at kafka.producer.BrokerPartitionInfo.updateInfo(BrokerPartitionInfo.scala:82)
+	at kafka.producer.async.DefaultEventHandler$$anonfun$handle$1.apply$mcV$sp(DefaultEventHandler.scala:67)
+	at kafka.utils.Utils$.swallow(Utils.scala:167)
+	at kafka.utils.Logging$class.swallowError(Logging.scala:106)
+	at kafka.utils.Utils$.swallowError(Utils.scala:46)
+	at kafka.producer.async.DefaultEventHandler.handle(DefaultEventHandler.scala:67)
+	at kafka.producer.Producer.send(Producer.scala:76)
+	at kafka.javaapi.producer.Producer.send(Producer.scala:33)
+	at cn.itcast.hadoop.kafka.simple.KafkaProducerSimple.main(KafkaProducerSimple.java:75)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:497)
+	at com.intellij.rt.execution.application.AppMain.main(AppMain.java:140)
+		
+

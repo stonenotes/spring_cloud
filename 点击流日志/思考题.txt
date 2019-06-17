@@ -1,0 +1,18 @@
+思考题：
+	1，如何保证一条数据在经过kafka和storm之时，消息被完整处理。
+		kakfa，生产和消费  storm，ackfail
+		producer---<同步/异步（缓冲区）>------------------->broker-------------------zk-------------> KafkaSpout------------------------------->Bolt(订单ID,去重)
+				缓冲区的时间阈值和数量阈值					partition的目录         offset=1w          ack fail(重发)								Redis Set
+				消息响应机制：ack (0,1,-1)														   自定义的Spout需要Map或外部存储保存数据
+				
+																					一批一批拉取(1w+num)
+																					时间阈值和数量阈值触发 更新操作 offset 1w+num 
+																					正在此时，KafkaSpout失败了，会导致重复消费
+	2，Kafka和storm组合有没有丢数据可能。
+	3，对重复消费的问题，该如何解决？
+	
+	
+	
+	
+	
+	
