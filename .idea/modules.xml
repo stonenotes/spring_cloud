@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/es/es.iml" filepath="$PROJECT_DIR$/es/es.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kafka/kafka.iml" filepath="$PROJECT_DIR$/kafka/kafka.iml" />
+      <module fileurl="file://$PROJECT_DIR$/logTracking/logTracking.iml" filepath="$PROJECT_DIR$/logTracking/logTracking.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lombok-slf4j/lombok-slf4j.iml" filepath="$PROJECT_DIR$/lombok-slf4j/lombok-slf4j.iml" />
+      <module fileurl="file://$PROJECT_DIR$/redis/redis.iml" filepath="$PROJECT_DIR$/redis/redis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/spring_cloud.iml" filepath="$PROJECT_DIR$/.idea/spring_cloud.iml" />
+    </modules>
+  </component>
+</project>

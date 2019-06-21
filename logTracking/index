@@ -1,0 +1,34 @@
+put logtrack
+put logtrack/_mapping
+{
+    "properties": {
+        "id": {
+            "type":"long"
+        },
+        "source_type":{
+            "type":"keyword"
+        },
+        "createTime": {
+            "type": "long"
+        },
+        "level": {
+            "type": "keyword"
+        },
+        "thread": {
+            "type": "keyword",
+            "index": false
+        },
+        "class": {
+            "type": "keyword",
+            "index": "false"
+        },
+        "message": {
+            "type": "text",
+            "analyzer": "ik_max_word"
+        },
+        "stack_trace": {
+          "type": "keyword",
+          "index": "false"
+        }
+      }
+}

@@ -1,0 +1,3 @@
+logging:
+  path: G:/study
+  file: lombok.log

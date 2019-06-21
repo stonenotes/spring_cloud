@@ -21,6 +21,7 @@ public class KafkaReceiver {
         if (kafkaMessage.isPresent()) {
             Object message = kafkaMessage.get();
             log.info("----------------- record =" + record);
+            log.info("----------------- key =" + record.key());
             log.info("------------------ message =" + message);
         }
     }
