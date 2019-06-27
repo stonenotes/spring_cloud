@@ -2,16 +2,14 @@ package com.stonenotes.lombok;
 
 import com.alibaba.fastjson.JSON;
 import com.stonenotes.lombok.pojo.LogInfo;
-import com.stonenotes.lombok.pojo.Person;
 import com.stonenotes.lombok.utils.DataUtil;
-import com.stonenotes.lombok.utils.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.*;
+import java.util.Random;
 
 /**
  * @Author: javan
@@ -21,6 +19,7 @@ import java.util.*;
 @SpringBootTest(classes = LombokApplication.class)
 @Slf4j
 public class LombokTest {
+
 
     String stackTrace = "java.lang.ArithmeticException: / by zero\n" +
             "at com.stonenotes.lombok.LombokTest.logError(LombokTest.java:45)\n" +
@@ -43,11 +42,11 @@ public class LombokTest {
             long randomTime = new Random().nextInt(60 * 24 * 60 * 60) * 1000L + new Random().nextInt(999);
             long createTime = System.currentTimeMillis() - randomTime;
             if (count % 25 == 0) {
-                logInfo = new LogInfo(createTime , "ERROR", Thread.currentThread().getName(),
+                logInfo = new LogInfo(createTime, "ERROR", Thread.currentThread().getName(),
                         "com.stonenotes.lombok.LombokTest", DataUtil.getRandomMessage(), stackTrace);
                 log.error(JSON.toJSONString(logInfo));
             } else {
-                logInfo = new LogInfo(createTime , "DEBUG", Thread.currentThread().getName(),
+                logInfo = new LogInfo(createTime, "DEBUG", Thread.currentThread().getName(),
                         "com.stonenotes.lombok.LombokTest", DataUtil.getRandomMessage(), stackTrace);
                 log.info(JSON.toJSONString(logInfo));
             }
@@ -89,5 +88,16 @@ public class LombokTest {
         }
     }
 
+    @Test
+    public void testLog() {
+//        InetAddress address = null;
+//        try {
+//            address = InetAddress.getLocalHost();
+//            System.out.println(address.getHostAddress());
+//        } catch (UnknownHostException e) {
+//            e.printStackTrace();
+//        }
+        log.info("testLog: " );
+    }
 
 }

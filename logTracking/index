@@ -5,7 +5,7 @@ put logtrack/_mapping
         "id": {
             "type":"long"
         },
-        "source_type":{
+        "sourceType":{
             "type":"keyword"
         },
         "createTime": {
@@ -18,7 +18,7 @@ put logtrack/_mapping
             "type": "keyword",
             "index": false
         },
-        "class": {
+        "className": {
             "type": "keyword",
             "index": "false"
         },
@@ -26,9 +26,24 @@ put logtrack/_mapping
             "type": "text",
             "analyzer": "ik_max_word"
         },
-        "stack_trace": {
+        "stackTrace": {
           "type": "keyword",
           "index": "false"
+        },
+        "ip":{
+            "type":"keyword"
+        },
+        "remoteIp":{
+            "type":"keyword"
+        },
+        "app":{
+            "type":"keyword"
+        },
+        "userId":{
+            "type":"keyword"
+        },
+         "sessionId":{
+            "type":"keyword"
         }
-      }
+    }
 }

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" type="text/css" th:href="@{/layui/css/layui.css}">
+    <script type="text/javascript" th:src="@{/layui/layui.js}"></script>
+    <title>Title</title>
+    <style type="text/css">
+        #mytable {
+            position: relative;
+            margin: auto;
+            left: 0;
+            right: 0;
+            top: 70px;
+        }
+
+        #content_detail {
+            position: relative;
+            margin: auto;
+            left: 0;
+            right: 0;
+            top: 70px;
+        }
+    </style>
+</head>
+<body style="padding: 10px; background-color: #f2f2f2">
+<table id="mytable" class="layui-table" style="width: 70%">
+    <colgroup>
+        <col width="150">
+        <col>
+    </colgroup>
+    <thead>
+    <tr>
+        <th colspan="2"><strong>日志详情</strong></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>ID</td>
+        <td><p th:text="${logInfo.getId()}"/></td>
+    </tr>
+    <tr>
+        <td>应用名</td>
+        <td><p th:text="${logInfo.getApp()}"/></td>
+    </tr>
+    <tr>
+        <td>服务器IP</td>
+        <td><p th:text="${logInfo.getIp()}"/></td>
+    </tr>
+    <tr>
+        <td>客户端IP</td>
+        <td><p th:text="${logInfo.getRemoteIp()}"/></td>
+    </tr>
+    <tr>
+        <td>会话ID</td>
+        <td><p th:text="${logInfo.getSessionId()}"/></td>
+    </tr>
+    <tr>
+        <td>用户ID</td>
+        <td><p th:text="${logInfo.getUserId()}"/></td>
+    </tr>
+    <tr>
+        <td>创建时间</td>
+        <td><p th:text="${#dates.format(logInfo.createTime, 'yyy-MM-dd HH:mm:ss.SSS')}"/></td>
+    </tr>
+
+    </tbody>
+</table>
+<br/>
+<div id="content_detail" class="layui-card" style="width: 70%">
+    <div class="layui-card-header"><strong>日志详情</strong></div>
+    <div class="layui-card-body">
+        <span th:if="${logInfo.getMessage() != ''}">
+            <span th:utext="${logInfo.getMessage().replaceAll('\n', '<br/>')}"></span>
+        </span>
+        <br/>
+        <span th:if="${logInfo.getStackTrace() != ''}">
+            <span style="color: #ff0000" th:text="${logInfo.getStackTrace()}"></span>
+        </span>
+    </div>
+</div>
+</body>
+</html>

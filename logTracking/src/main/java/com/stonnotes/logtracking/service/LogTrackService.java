@@ -18,7 +18,7 @@ public interface LogTrackService {
      * @param requestParam
      * @return
      */
-    public Result<List<LogInfo>> query(LogSearchRequest requestParam);
+    public Result<List<LogInfo>> query(LogSearchRequest requestParam) throws IOException;
 
     /**
      * 通过id查询日志详情

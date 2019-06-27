@@ -2,14 +2,11 @@ package com.stonnotes.logtracking.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.stonnotes.logtracking.config.EsConfigParam;
-import com.stonnotes.logtracking.exception.GlobalException;
 import com.stonnotes.logtracking.pojo.LogInfo;
 import com.stonnotes.logtracking.request.LogSearchRequest;
-import com.stonnotes.logtracking.result.CodeMsg;
 import com.stonnotes.logtracking.result.Result;
 import com.stonnotes.logtracking.service.LogTrackService;
 import com.stonnotes.logtracking.utils.Constants;
-import com.stonnotes.logtracking.utils.DataUtil;
 import com.stonnotes.logtracking.utils.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.bulk.BulkItemResponse;
@@ -24,6 +21,7 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
@@ -38,7 +36,6 @@ import org.springframework.util.StringUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * @Author: javan
@@ -57,36 +54,41 @@ public class LogTrackServiceImpl implements LogTrackService {
     private RestHighLevelClient restHighLevelClient;
 
     @Override
-    public Result<List<LogInfo>> query(LogSearchRequest requestParam) {
+    public Result<List<LogInfo>> query(LogSearchRequest requestParam) throws IOException {
         long lastTime = System.currentTimeMillis();
+        String id = requestParam.getId();
         String startTime = requestParam.getStartTime();
         String endTime = requestParam.getEndTime();
         String level = requestParam.getLevel();
         String message = requestParam.getMessage();
-        int pageNum = requestParam.getPageNum() <= 0 ? 0 : requestParam.getPageNum();
+        int pageNum = requestParam.getPageNum() == 0 ? 0 : requestParam.getPageNum() - 1;
         int pageSize = requestParam.getPageSize() <= 0 ? 20 : requestParam.getPageSize();
 
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+
         // 添加时间范围查询
-        addTimeRangeQuery(searchSourceBuilder, startTime, endTime);
+        addTimeRangeQuery(boolQuery, startTime, endTime);
+        if (!StringUtils.isEmpty(id)) {
+//            searchSourceBuilder.query(QueryBuilders.matchQuery("id", id).operator(Operator.AND));
+            boolQuery.must(QueryBuilders.termsQuery("id", id));
+        }
         if (!StringUtils.isEmpty(level)) {
-            searchSourceBuilder.query(QueryBuilders.termsQuery("level", level));
+//             searchSourceBuilder.query(QueryBuilders.termsQuery("level", level));
+//            searchSourceBuilder.query(QueryBuilders.matchQuery("level", level).operator(Operator.AND));
+             boolQuery.must(QueryBuilders.termsQuery("level", level));
         }
         if (!StringUtils.isEmpty(message)) {
-            searchSourceBuilder.query(QueryBuilders.matchQuery("message", message));
+            // searchSourceBuilder.query(QueryBuilders.matchQuery("message", message).operator(Operator.AND));
+            boolQuery.must(QueryBuilders.matchQuery("message", message));
         }
+        searchSourceBuilder.query(boolQuery);
         SearchRequest request = new SearchRequest(Constants.OT_LOTTETY_INDEX_NAME);
         request.source(searchSourceBuilder
                 .from(pageNum * pageSize)
                 .size(pageSize)
                 .sort("createTime", SortOrder.DESC));
-        SearchResponse search = null;
-        try {
-            search = restHighLevelClient.search(request, RequestOptions.DEFAULT);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        SearchResponse search =  restHighLevelClient.search(request, RequestOptions.DEFAULT);
         System.out.println("Hits:" + search.getHits().getTotalHits());
         List<LogInfo> list = new ArrayList<>();
         search.getHits().forEach(e -> {
@@ -175,7 +177,7 @@ public class LogTrackServiceImpl implements LogTrackService {
         System.out.println("批量插入一共执行时间: " + (System.currentTimeMillis() - lastTime));
     }
 
-    private void addTimeRangeQuery(SearchSourceBuilder searchSourceBuilder, String startTime, String endTime){
+    private void addTimeRangeQuery(BoolQueryBuilder boolQueryBuilder, String startTime, String endTime){
         if (StringUtils.isEmpty(startTime) && StringUtils.isEmpty(endTime)) {
             return;
         }
@@ -192,6 +194,8 @@ public class LogTrackServiceImpl implements LogTrackService {
             }
             rangeQueryBuilder.lte(endTimeSearch);
         }
-        searchSourceBuilder.query(rangeQueryBuilder);
+        if (rangeQueryBuilder != null) {
+            boolQueryBuilder.must(rangeQueryBuilder);
+        }
     }
 }

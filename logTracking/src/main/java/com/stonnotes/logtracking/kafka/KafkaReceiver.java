@@ -32,15 +32,22 @@ public class KafkaReceiver {
         Optional<?> kafkaMessage = Optional.ofNullable(record.value());
         if (kafkaMessage.isPresent()) {
             Object message = kafkaMessage.get();
-//            log.info("----------------- record =" + record);
-//            log.info("----------------- key =" + record.key().toString());
             log.info("------------------key = {}, message = {}",record.toString(), message.toString());
             try {
                 KafkaLogInfo kafkaLogInfo = JSON.parseObject(message.toString(), KafkaLogInfo.class);
+                if (StringUtils.isEmpty(kafkaLogInfo.getRemoteIp()) && StringUtils.isEmpty(kafkaLogInfo.getSessionId())
+                        && StringUtils.isEmpty(kafkaLogInfo.getUserId()) && StringUtils.isEmpty(kafkaLogInfo.getApp())) {
+                    return;
+                }
                 long randomTime = new Random().nextInt(60 * 24 * 60 * 60) * 1000L + new Random().nextInt(999);
                 long createTime = DateUtil.stringToDate(kafkaLogInfo.getCreateTime()).getTime() - randomTime;
                 LogInfo logInfo = new LogInfo();
                 logInfo.setId(idWorker.nextId());
+                logInfo.setApp(kafkaLogInfo.getApp());
+                logInfo.setIp(kafkaLogInfo.getIp());
+                logInfo.setRemoteIp(kafkaLogInfo.getRemoteIp());
+                logInfo.setSessionId(kafkaLogInfo.getSessionId());
+                logInfo.setUserId(kafkaLogInfo.getUserId());
                 logInfo.setClassName(kafkaLogInfo.getClassName());
                 logInfo.setCreateTime(createTime);
                 logInfo.setLevel(kafkaLogInfo.getLevel());

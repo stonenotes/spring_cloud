@@ -8,6 +8,7 @@ import lombok.Data;
  */
 @Data
 public class LogSearchRequest {
+    private String id;
     private String startTime;
     private String endTime;
     private String message;

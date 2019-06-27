@@ -15,15 +15,17 @@ import lombok.NoArgsConstructor;
 public class LogInfo {
 
     private String id;
-    private long createTime;
-    private String level;// ERROR INFO
-    private String thread;
-    @JSONField(name = "class")
-    private String className;
-    private String message;
-    @JSONField(name = "stack_trace")
-    private String stackTrace;
-    @JSONField(name = "source_type")
+    private long createTime;// 创建时间
+    private String ip;// 服务器ip
+    private String remoteIp;//客服端ip
+    private String app;//服务器应用名
+    private String sessionId;//会话id
+    private String userId;//用户id
+    private String level;//日志级别
+    private String thread;//所在线程
+    private String className; //日志类名称
+    private String message;//内容
+    private String stackTrace;//异常内容
     private String sourceType;// 来源类型，是从某个flume过来
 
 }

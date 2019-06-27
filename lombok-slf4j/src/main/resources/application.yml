@@ -1,3 +1,6 @@
 logging:
   path: G:/study
   file: lombok.log
+spring:
+  application:
+    name: lomboktest

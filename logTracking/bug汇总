@@ -1,0 +1,18 @@
+1.thymeleaf渲染layui.js的“col:[[]]”里面的内容失败
+[[]]是thymeleaf的内联表达式，可以在cols的后面换行，或者在script标签里 th:inline="none" 就可以了
+
+2.SearchResponse searchResponse = client.prepareSearch(index)
+                  .setTypes(type)
+                  .setQuery(QueryBuilders.matchAllQuery()) //查询所有
+                  .setQuery(QueryBuilders.boolQuery()
+                  .must(QueryBuilders.matchQuery("uquestion", uquestion))//查询uquestion为139的
+                  .must(QueryBuilders.matchQuery("province", province)))//查询省份为江苏的
+                  //.setQuery(QueryBuilders.matchQuery("uquestion", "12599").operator(Operator.AND)) //根据tom分词查询name,默认or
+                  //.setQuery(QueryBuilders.matchQuery("province", "江苏").operator(Operator.AND)) //根据tom分词查询name,默认or
+                  //.setQuery(QueryBuilders.multiMatchQuery("tom", "name", "age")) //指定查询的字段
+                  //.setQuery(QueryBuilders.queryString("name:to* AND age:[0 TO 19]")) //根据条件查询,支持通配符大于等于0小于等于19
+                  //.setQuery(QueryBuilders.termQuery("name", "tom"))//查询时不分词
+                  .setSearchType(SearchType.QUERY_THEN_FETCH)
+                  .setFrom(0).setSize(10)//分页
+                  //.addSort("age", SortOrder.DESC)//排序
+                  .get();

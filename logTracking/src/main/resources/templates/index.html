@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>index</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/layui/css/layui.css}">
+    <script type="text/javascript" th:src="@{/layui/layui.js}"></script>
+    <script th:inline="none">
+        layui.use(['table', 'form', 'laydate'], function () {
+            var table = layui.table
+                , form = layui.form
+                , laydate = layui.laydate;
+            var date = new Date();
+            laydate.render({
+                elem: '#startTime'
+                , type: 'datetime'
+            });
+            laydate.render({
+                elem: '#endTime'
+                , type: 'datetime'
+            });
+            //渲染
+            table.render({
+                elem: '#logtrack'
+                , cols: [[ //标题栏
+                    {field: 'id', title: 'ID', width: 200, sort: true}
+                    , {field: 'userId', title: "用户ID", width: 80} //空列
+                    , {field: 'sessionId', title: "会话ID", width: 80} //空列
+                    , {field: 'ip', title: '服务器IP', width: 150}
+                    , {field: 'remoteIp', title: '客户端IP', width: 200}
+                    , {field: 'app', title: '服务器名称', width: 200}
+                    , {
+                        field: 'createTime', title: '创建时间', width: 200, templet: function (d) {
+                            date.setTime(d.createTime);
+                            return date.Format("yyyy-MM-dd hh:mm:ss.S");
+                        }
+                    }
+                    , {field: 'message', title: '信息', width: 400}
+                    , {field: 'stackTrace', title: '错误日志'}
+                    , {field: 'operation', title: '操作', toolbar: '#barDemo', width: 150}
+                ]]
+                , skin: 'row' //表格风格
+                , url: '/logTrack/query'
+                , method: 'POST'
+                , contentType: 'application/json;charset=UTF-8'
+                , request: {
+                    pageName: "pageNum",
+                    limitName: "pageSize"
+                }
+                , parseData: function (res) {
+                    console.log(res.data);
+                    console.log(res.totalPage);
+                    console.log(res.total);
+                    console.log(res.code);
+                    return {
+                        "code": res.code, //解析接口状态
+                        "msg": res.message, //解析提示文本
+                        "count": res.total, //解析数据长度
+                        "data": res.data //解析数据列表
+                    };
+                }
+                , even: true
+                //,size: 'lg' //尺寸
+                , id: 'tableReload'
+                , page: true //是否显示分页
+                , limits: [20, 30, 50]
+                , limit: 20 //每页默认显示的数量
+                , loading: true //请求数据时，是否显示loading
+            });
+
+            form.on('submit(search)', function (data) {
+                var formData = data.field;
+                let id = formData.id;
+                let startTime = formData.startTime;
+                let endTime = formData.endTime;
+                let message = formData.message;
+                table.reload("tableReload", {
+                    url: '/logTrack/query'
+                    , method: 'POST'
+                    , contentType: 'application/json;charset=UTF-8'
+                    , page: {
+                        curr: 1
+                    }
+                    , where: {
+                        id: id,
+                        startTime: startTime,
+                        endTime: endTime,
+                        message: message
+                    }
+                });
+                return false;//false：阻止表单跳转  true：表单跳转
+            });
+            //监听行工具事件
+            table.on('tool(logtrack)', function (obj) {
+                let data = obj.data;
+                if (obj.event === 'detail') {
+                    console.log(data);
+                    window.location.href = "/logTrack/log_detail/" + data.id;
+                }
+            });
+        });
+
+        Date.prototype.Format = function (fmt) { //author: meizz
+            var o = {
+                "M+": this.getMonth() + 1, //月份
+                "d+": this.getDate(), //日
+                "h+": this.getHours(), //小时
+                "m+": this.getMinutes(), //分
+                "s+": this.getSeconds(), //秒
+                "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                "S": this.getMilliseconds() //毫秒
+            };
+            if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var k in o)
+                if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            return fmt;
+        }
+    </script>
+</head>
+<body style="padding: 10px">
+<p th:text="'hello:' + ${name}"></p>
+<!--<div class="layui-btn-group">-->
+<!--<button class="layui-btn">增加</button>-->
+<!--<button class="layui-btn ">编辑</button>-->
+<!--<button class="layui-btn">删除</button>-->
+<!--</div>-->
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="detail" href="javascript:;">查看详情</a>
+</script>
+<form class="layui-form layui-form-pane1" action="" lay-filter="first">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">ID</label>
+            <div class="layui-input-inline" style="width: 150px">
+                <input type="text" name="id" id="id" placeholder="请输入ID"
+                       autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">开始时间</label>
+            <div class="layui-input-inline">
+                <input type="text" name="startTime" class="layui-input" id="startTime"
+                       placeholder="yyyy-MM-dd HH:mm:ss">
+            </div>
+            <div class="layui-form-mid">结束时间</div>
+            <div class="layui-input-inline">
+                <input type="text" name="endTime" class="layui-input" id="endTime" placeholder="yyyy-MM-dd HH:mm:ss">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">关键字</label>
+            <div class="layui-input-inline" style="width: 150px">
+                <input type="text" name="message" id="message" placeholder="请输入关键字"
+                       autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+        <button id="search" class="layui-btn" lay-submit="" lay-filter="search">搜索</button>
+    </div>
+</form>
+<table id="logtrack" lay-filter="logtrack"></table>
+</body>
+</html>

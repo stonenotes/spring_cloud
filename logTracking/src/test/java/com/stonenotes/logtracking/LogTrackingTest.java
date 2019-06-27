@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.stonnotes.logtracking.LogTrackingApplication;
 import com.stonnotes.logtracking.config.EsConfigParam;
 import com.stonnotes.logtracking.pojo.LogInfo;
-import com.stonnotes.logtracking.utils.Constants;
 import com.stonnotes.logtracking.utils.DataUtil;
 import com.stonnotes.logtracking.utils.DateUtil;
 import com.stonnotes.logtracking.utils.IdWorker;
@@ -12,19 +11,13 @@ import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.delete.DeleteRequest;
-import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
@@ -44,13 +37,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @Author: javan
@@ -106,13 +94,13 @@ public class LogTrackingTest {
 //        long createTime = DateUtil.stringToDate("2019-06-20 15:40:35.347").getTime();
         long createTime = DateUtil.stringToDate("2019-06-20 16:40:50.347").getTime();
         String id = idWorker.nextId();
-        LogInfo logInfo = new LogInfo(id, createTime, "ERROR", "main",
-                "com.stonenotes.lombok.LombokTest", "大于等于", stackTrace, "");
-        IndexRequest request = new IndexRequest("logtrack", "_doc", id);
-        request.source(JSON.toJSONString(logInfo), XContentType.JSON);
-        IndexResponse response = restHighLevelClient.index(request, RequestOptions.DEFAULT);
-        System.out.println(response);
-        System.out.println("一共执行时间: " + (System.currentTimeMillis() - lastTime));
+//        LogInfo logInfo = new LogInfo(id, createTime, "ERROR", "main",
+//                "com.stonenotes.lombok.LombokTest", "大于等于", stackTrace, "");
+//        IndexRequest request = new IndexRequest("logtrack", "_doc", id);
+//        request.source(JSON.toJSONString(logInfo), XContentType.JSON);
+//        IndexResponse response = restHighLevelClient.index(request, RequestOptions.DEFAULT);
+//        System.out.println(response);
+//        System.out.println("一共执行时间: " + (System.currentTimeMillis() - lastTime));
     }
 
     // 批量添加数据
@@ -124,18 +112,18 @@ public class LogTrackingTest {
 //        long createTime = DateUtil.stringToDate("2019-06-20 11:48:30.347").getTime();
         long createTime = DateUtil.stringToDate("2019-06-20 11:28:30.347").getTime();
         for (int i = 1; i <= 10000; i++) {
-            String id = idWorker.nextId();
-            LogInfo logInfo;
-            if (i % 15 == 0) {
-                logInfo = new LogInfo(id, createTime + (i * 1000 + i), "ERROR", "main",
-                        "com.stonenotes.lombok.LombokTest", DataUtil.getRandomMessage(), stackTrace, "");
-            } else {
-                logInfo = new LogInfo(id, createTime + (i * 1000 + i), "INFO", "main",
-                        "com.stonenotes.lombok.LombokTest", DataUtil.getRandomMessage(), null, null);
-            }
-            IndexRequest indexRequest = new IndexRequest(Constants.OT_LOTTETY_INDEX_NAME).id(id);
-            indexRequest.source(JSON.toJSONString(logInfo), XContentType.JSON);
-            request.add(indexRequest);
+//            String id = idWorker.nextId();
+//            LogInfo logInfo;
+//            if (i % 15 == 0) {
+//                logInfo = new LogInfo(id, createTime + (i * 1000 + i), "ERROR", "main",
+//                        "com.stonenotes.lombok.LombokTest", DataUtil.getRandomMessage(), stackTrace, "");
+//            } else {
+//                logInfo = new LogInfo(id, createTime + (i * 1000 + i), "INFO", "main",
+//                        "com.stonenotes.lombok.LombokTest", DataUtil.getRandomMessage(), null, null);
+//            }
+//            IndexRequest indexRequest = new IndexRequest(Constants.OT_LOTTETY_INDEX_NAME).id(id);
+//            indexRequest.source(JSON.toJSONString(logInfo), XContentType.JSON);
+//            request.add(indexRequest);
         }
         BulkResponse bulkResponse = restHighLevelClient.bulk(request, RequestOptions.DEFAULT);
         System.out.println(bulkResponse);
