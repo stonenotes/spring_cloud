@@ -2,6 +2,7 @@ package com.stonenotes.lombok.slf4j;
 
 import com.stonenotes.lombok.utils.CookieUtils;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
@@ -20,6 +21,8 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
     private static final String USER_ID = "userId";
     private static final String APP_NAME = "appName";
     private static final String REMOTE_IP = "remoteIp";
+    @Value("${spring.application.name}")
+    private String appName;
 
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String sessionId = CookieUtils.getCookieValue(request, SESSION_KEY);

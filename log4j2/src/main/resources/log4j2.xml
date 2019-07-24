@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration status="trace" strict="true" name="LogConfig">
+    <Properties>
+        <Property name="filepath">g:/logs</Property>
+    </Properties>
+    <Appenders>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <!--<PatternLayout>-->
+                <!--<Pattern>[%d]  %X{userId} - [%c] - [%highlight{%level}] - [%method] - [%t] - %msg%n</Pattern>-->
+            <!--</PatternLayout>-->
+            <JsonLayout compact="true" eventEol="true" stacktraceAsString="true">
+                <KeyValuePair key="userId" value="${ctx:userId}"/>
+                <KeyValuePair key="ip" value="${ctx:ip}"/>
+                <KeyValuePair key="remoteIp" value="${ctx:remoteIp}"/>
+                <KeyValuePair key="sessionId" value="${ctx:sessionId}"/>
+                <KeyValuePair key="appName" value="${ctx:appName}"/>
+                <KeyValuePair key="createTime" value="$${date:yyyy-MM-dd HH:mm:ss.SSS}"/>
+            </JsonLayout>
+        </Console>
+        <RollingFile name="logService"
+                     fileName="${filepath}/log4j2.log"
+                     filePattern="${filepath}/bak/log4j2-%d{yy-MM-dd HH:mm:ss}.log.gz">
+            <!--<PatternLayout>-->
+                <!--<Pattern>[%d] - [%c] - [%highlight{%level}] - [%method] - [%t] - %msg%n</Pattern>-->
+            <!--</PatternLayout>-->
+            <JsonLayout compact="true" eventEol="true" stacktraceAsString="true">
+                <KeyValuePair key="userId" value="${ctx:userId}"/>
+                <KeyValuePair key="ip" value="${ctx:ip}"/>
+                <KeyValuePair key="remoteIp" value="${ctx:remoteIp}"/>
+                <KeyValuePair key="sessionId" value="${ctx:sessionId}"/>
+                <KeyValuePair key="appName" value="${ctx:appName}"/>
+                <KeyValuePair key="createTime" value="$${date:yyyy-MM-dd HH:mm:ss.SSS}"/>
+            </JsonLayout>
+            <Policies>
+                <CronTriggeringPolicy schedule="1 * * * * ?" evaluateOnStartup="true"/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="fileLogger" level="debug" additivity="false">
+            <AppenderRef ref="logService"/>
+            <AppenderRef ref="STDOUT"/>
+        </Logger>
+
+        <Root level="info">
+            <AppenderRef ref="STDOUT"/>
+            <AppenderRef ref="logService"/>
+        </Root>
+    </Loggers>
+
+</Configuration>

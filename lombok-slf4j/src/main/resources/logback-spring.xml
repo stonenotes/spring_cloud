@@ -11,7 +11,7 @@
         <!--<JsonLayout/>-->
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} ${ip} - %X{remoteId} - %X{sessionId} - %X{userId} - %X{appName} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
         </encoder>
     </appender>
     <!-- 按照每天生成日志文件 -->
@@ -46,29 +46,11 @@
                         "sessionId": "%X{sessionId}",
                         "userId":"%X{userId}",
                         "level": "%level",
-                        <!--"trace": "%X{X-B3-TraceId:-}",-->
-                        <!--"span": "%X{X-B3-SpanId:-}",-->
-                        <!--"parent": "%X{X-B3-ParentSpanId:-}",-->
                         "thread": "%thread",
                         "className": "%logger{40}",
                         "message": "%message",
                         "stackTrace": "%exception{10}"
                         }
-                        <!--{-->
-                        <!--"level": "%level",-->
-                        <!--"trace": "%X{X-B3-TraceId:-}",-->
-                        <!--"requestId": "%X{requestId}",-->
-                        <!--"remoteIp": "%X{remoteIp}",-->
-                        <!--"span": "%X{X-B3-SpanId:-}",-->
-                        <!--"parent":-->
-                        <!--"%X{X-B3-ParentSpanId:-}",-->
-                        <!--"thread": "%thread",-->
-                        <!--"class":-->
-                        <!--"%logger{40}",-->
-                        <!--"message": "%message",-->
-                        <!--"stack_trace":-->
-                        <!--"%exception{10}"-->
-                        <!--}-->
                     </pattern>
                 </pattern>
             </providers>

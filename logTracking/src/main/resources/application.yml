@@ -48,4 +48,4 @@ spring:
       html-application-cache: true
     static-locations: classpath:/static/
 server:
-  port: 8081
+  port: 8888
