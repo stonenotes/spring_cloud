@@ -15,9 +15,10 @@ import java.util.Optional;
 @Slf4j
 public class KafkaReceiver {
 
-    @KafkaListener(topics = "test")
+    @KafkaListener(topics = "ot-log-tracking")
     public void listen(ConsumerRecord<?, ?> record) {
         Optional<?> kafkaMessage = Optional.ofNullable(record.value());
+        log.info("----------------- curentThread =" + Thread.currentThread().getName());
         if (kafkaMessage.isPresent()) {
             Object message = kafkaMessage.get();
             log.info("----------------- record =" + record);

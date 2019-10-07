@@ -29,8 +29,8 @@ public class KafkaSender {
         message.setId(System.currentTimeMillis());
         message.setMsg(UUID.randomUUID().toString());
         message.setSendTime(new Date());
-        log.info("+++++++++++++++++++++  message = {}", gson.toJson(message));
-        kafkaTemplate.send("zhisheng", gson.toJson(message));
+        log.info("----------  message = {}", gson.toJson(message));
+        kafkaTemplate.send("ot-log-tracking", gson.toJson(message));
     }
 
 }
